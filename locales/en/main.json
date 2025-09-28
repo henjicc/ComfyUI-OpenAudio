@@ -1,4 +1,6 @@
 {
   "OpenAudio": "OpenAudio S1-mini TTS",
-  "OpenAudioModelLoader": "OpenAudio Model Loader"
+  "OpenAudioModelLoader": "OpenAudio Model Loader",
+  "OpenAudioSaveSpeaker": "OpenAudio Save Speaker",
+  "OpenAudioLoadSpeaker": "OpenAudio Load Speaker"
 }

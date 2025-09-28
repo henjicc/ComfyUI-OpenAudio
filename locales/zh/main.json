@@ -1,4 +1,6 @@
 {
   "OpenAudio": "OpenAudio S1-mini TTS",
-  "OpenAudioModelLoader": "OpenAudio模型加载器"
+  "OpenAudioModelLoader": "OpenAudio模型加载器",
+  "OpenAudioSaveSpeaker": "OpenAudio保存音色",
+  "OpenAudioLoadSpeaker": "OpenAudio加载音色"
 }

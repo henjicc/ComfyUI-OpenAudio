@@ -16,8 +16,12 @@ pyrootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 from fish_speech.utils.file import AUDIO_EXTENSIONS
 
-# register eval resolver
-OmegaConf.register_new_resolver("eval", eval)
+# register eval resolver，避免重复注册
+try:
+    OmegaConf.register_new_resolver("eval", eval)
+except ValueError:
+    # 如果已经注册了，就忽略错误
+    pass
 
 
 def load_model(config_name, checkpoint_path, device="cuda"):

@@ -34,6 +34,10 @@
       "reference_text": {
         "name": "Reference Text",
         "tooltip": "Text corresponding to reference audio (optional)"
+      },
+      "speaker_data": {
+        "name": "Speaker Data",
+        "tooltip": "Loaded speaker data (optional)"
       }
     },
     "outputs": {
@@ -64,6 +68,50 @@
       "0": {
         "name": "OpenAudio Model",
         "tooltip": "Loaded OpenAudio model object"
+      }
+    }
+  },
+  "OpenAudioSaveSpeaker": {
+    "display_name": "OpenAudio Save Speaker",
+    "description": "Save OpenAudio speaker features to file",
+    "inputs": {
+      "reference_audio": {
+        "name": "Reference Audio",
+        "tooltip": "Reference audio for extracting speaker features"
+      },
+      "reference_text": {
+        "name": "Reference Text",
+        "tooltip": "Text corresponding to reference audio"
+      },
+      "speaker_name": {
+        "name": "Speaker Name",
+        "tooltip": "Speaker file name"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Speaker File",
+        "tooltip": "Saved speaker file path"
+      }
+    }
+  },
+  "OpenAudioLoadSpeaker": {
+    "display_name": "OpenAudio Load Speaker",
+    "description": "Load OpenAudio speaker feature file",
+    "inputs": {
+      "speaker_file": {
+        "name": "Speaker File",
+        "tooltip": "Speaker file to load"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Speaker Data",
+        "tooltip": "Loaded speaker data"
+      },
+      "1": {
+        "name": "Speaker Name",
+        "tooltip": "Speaker file name"
       }
     }
   }

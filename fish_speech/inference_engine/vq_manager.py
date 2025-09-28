@@ -19,9 +19,14 @@ class VQManager:
         )
         logger.info(f"VQ features: {codes.shape}")
 
-        if isinstance(self.decoder_model, DAC):
+        # 更宽松的类型检查
+        if hasattr(self.decoder_model, 'decode') and callable(getattr(self.decoder_model, 'decode')):
+            # 确保codes的形状正确
+            if codes.ndim == 2:
+                codes = codes[None]  # 添加批次维度
+            
             return self.decoder_model.decode(
-                indices=codes[None],
+                indices=codes,
                 feature_lengths=feature_lengths,
             )[0].squeeze()
 
@@ -47,8 +52,19 @@ class VQManager:
             )
 
             # VQ Encoder
-            if isinstance(self.decoder_model, DAC):
-                prompt_tokens = self.decoder_model.encode(audios, audio_lengths)[0][0]
+            # 更宽松的类型检查
+            if hasattr(self.decoder_model, 'encode') and callable(getattr(self.decoder_model, 'encode')):
+                result = self.decoder_model.encode(audios, audio_lengths)
+                # 处理返回值，可能是元组也可能是单个张量
+                if isinstance(result, tuple):
+                    prompt_tokens = result[0]
+                else:
+                    prompt_tokens = result
+                
+                # 如果prompt_tokens是3D张量，取第一个元素
+                if prompt_tokens.ndim == 3:
+                    prompt_tokens = prompt_tokens[0]
+                    
                 logger.info(f"Encoded prompt: {prompt_tokens.shape}")
             else:
                 raise ValueError(f"Unknown model type: {type(self.decoder_model)}")

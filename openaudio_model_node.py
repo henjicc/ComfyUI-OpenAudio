@@ -48,9 +48,13 @@ class OpenAudioModelNode:
     def _get_model_paths(cls, model_name):
         """获取模型路径，优先使用ComfyUI模型目录"""
         try:
-            # 获取ComfyUI的模型目录，创建OpenAudio专用文件夹
-            comfyui_models_dir = folder_paths.get_folder_paths("custom_nodes")[0]
-            comfyui_root = os.path.dirname(os.path.dirname(comfyui_models_dir))
+            # 获取节点本身路径
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            # 往上一层就是custom_nodes的路径
+            custom_nodes_dir = os.path.dirname(current_dir)
+            # 再往上一层就是ComfyUI的根目录
+            comfyui_root = os.path.dirname(custom_nodes_dir)
+            # 在根目录下创建models/OpenAudio目录
             openaudio_models_dir = os.path.join(comfyui_root, "models", "OpenAudio")
             
             # 确保OpenAudio模型目录存在

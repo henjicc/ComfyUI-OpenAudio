@@ -1,25 +1,14 @@
-import os
-import subprocess as sp
-import sys
-import time
-from datetime import timedelta
-from functools import lru_cache
-from pathlib import Path
-from random import Random
-
-import click
-import numpy as np
-import torch
-import torchaudio
-from hydra import compose, initialize
-from hydra.utils import instantiate
 from loguru import logger
 from omegaconf import OmegaConf
 
 from fish_speech.utils.file import AUDIO_EXTENSIONS, list_files, load_filelist
 
-# register eval resolver
-OmegaConf.register_new_resolver("eval", eval)
+# register eval resolver，避免重复注册
+try:
+    OmegaConf.register_new_resolver("eval", eval)
+except ValueError:
+    # 如果已经注册了，就忽略错误
+    pass
 # This file is used to convert the audio files to text files using the Whisper model.
 # It's mainly used to generate the training data for the VQ model.
 
@@ -187,46 +176,4 @@ def main(
 
     # This is a worker
     logger.info(f"Starting worker")
-    if filelist:
-        files = [i[0] for i in load_filelist(filelist)]
-    else:
-        files = list_files(folder, AUDIO_EXTENSIONS, recursive=True, sort=False)
-
-    print(f"Found {len(files)} files")
-    files = [Path(f) for f in files if not Path(f).with_suffix(".npy").exists()]
-
-    total_files = len(files)
-    files = files[RANK::WORLD_SIZE]
-    logger.info(f"Processing {len(files)}/{total_files} files")
-
-    # Batch processing
-    total_time = 0
-    begin_time = time.time()
-    processed_files = 0
-    model = get_model(config_name, checkpoint_path)
-
-    for n_batch, idx in enumerate(range(0, len(files), batch_size)):
-        batch = files[idx : idx + batch_size]
-        batch_time = process_batch(batch, model)
-
-        total_time += batch_time
-        processed_files += len(batch)
-
-        if (n_batch + 1) % 10 == 0:
-            eta = (
-                (time.time() - begin_time)
-                / processed_files
-                * (len(files) - processed_files)
-            )
-            logger.info(
-                f"Processed {processed_files} files, {total_time / 3600:.2f} hours of audio, "
-                + f"ETA: {timedelta(seconds=round(eta))}s"
-            )
-
-    logger.info(
-        f"Finished processing {len(files)} files, {total_time / 3600:.2f} hours of audio"
-    )
-
-
-if __name__ == "__main__":
-    main()
+    if
