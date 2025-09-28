@@ -1,0 +1,33 @@
+# OpenAudio ComfyUI Node Requirements
+# Only includes dependencies needed for ComfyUI integration
+
+# Core dependencies
+numpy
+transformers
+datasets
+lightning
+hydra-core
+natsort
+einops
+librosa
+rich
+grpcio
+kui
+loguru
+loralib
+pyrootutils
+resampy
+einx[torch]
+zstandard
+pydub
+pyaudio
+opencc-python-reimplemented
+silero-vad
+ormsgpack
+tiktoken
+pydantic
+cachetools
+
+# Model dependencies
+descript-audio-codec
+descript-audiotools

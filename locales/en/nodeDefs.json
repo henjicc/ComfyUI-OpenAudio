@@ -1,0 +1,70 @@
+{
+  "OpenAudio": {
+    "display_name": "OpenAudio S1-mini TTS",
+    "description": "Text-to-speech conversion using the OpenAudio S1-mini model",
+    "inputs": {
+      "model": {
+        "name": "Model",
+        "tooltip": "OpenAudio model object, obtained through the OpenAudio Model Loader node"
+      },
+      "text": {
+        "name": "Text",
+        "tooltip": "Text content to be converted to speech"
+      },
+      "temperature": {
+        "name": "Temperature",
+        "tooltip": "Controls generation randomness"
+      },
+      "top_p": {
+        "name": "Top P",
+        "tooltip": "Nucleus sampling parameter"
+      },
+      "repetition_penalty": {
+        "name": "Repetition Penalty",
+        "tooltip": "Repetition penalty factor"
+      },
+      "seed": {
+        "name": "Seed",
+        "tooltip": "Random seed, used to control generation randomness"
+      },
+      "reference_audio": {
+        "name": "Reference Audio",
+        "tooltip": "Reference audio for voice cloning (optional)"
+      },
+      "reference_text": {
+        "name": "Reference Text",
+        "tooltip": "Text corresponding to reference audio (optional)"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "Audio",
+        "tooltip": "Generated audio output"
+      }
+    }
+  },
+  "OpenAudioModelLoader": {
+    "display_name": "OpenAudio Model Loader",
+    "description": "Load OpenAudio S1-mini model for inference",
+    "inputs": {
+      "model_name": {
+        "name": "Model Name",
+        "tooltip": "Name of the OpenAudio model to load"
+      },
+      "device": {
+        "name": "Device",
+        "tooltip": "Device to run the model on"
+      },
+      "auto_download": {
+        "name": "Auto Download",
+        "tooltip": "Whether to automatically download the model"
+      }
+    },
+    "outputs": {
+      "0": {
+        "name": "OpenAudio Model",
+        "tooltip": "Loaded OpenAudio model object"
+      }
+    }
+  }
+}
