@@ -220,7 +220,7 @@ class OpenAudioNode:
         
         Args:
             model (dict): OpenAudio模型对象
-            text (str): 覃转换为语音的文本
+            text (str): 蓓转换为语音的文本
             temperature (float): 温度参数
             top_p (float): top-p参数
             repetition_penalty (float): 重复惩罚
@@ -342,13 +342,35 @@ class OpenAudioNode:
             
             # 如果提供了参考音频和文本，则使用它们
             if reference_audio is not None and reference_text:
-                # 使用上下文管理器确保文件正确关闭
-                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_file:
-                    temp_filename = tmp_file.name
-                    sf.write(temp_filename, reference_audio["waveform"].squeeze().numpy(), 
-                            reference_audio["sample_rate"])
-                
+                # 修复：创建临时文件时避免句柄冲突，并确保转换为单声道
+                temp_filename = None
                 try:
+                    # 先创建临时文件名，不立即打开文件
+                    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_file:
+                        temp_filename = tmp_file.name
+                    
+                    # 获取音频数据并确保是单声道
+                    audio_waveform = reference_audio["waveform"].squeeze().numpy()
+                    # 如果是立体声，转换为单声道
+                    if audio_waveform.ndim > 1 and audio_waveform.shape[0] > 1:
+                        audio_waveform = np.mean(audio_waveform, axis=0)
+                    
+                    # 使用soundfile写入音频数据，明确指定格式参数
+                    sf.write(temp_filename, audio_waveform, 
+                            reference_audio["sample_rate"], subtype='PCM_16', endian='LITTLE', format='WAV')
+                    
+                    # 等待文件写入完成
+                    import time
+                    time.sleep(0.1)
+                    
+                    # 验证文件是否成功创建且不为空
+                    if not os.path.exists(temp_filename):
+                        raise RuntimeError("临时音频文件创建失败")
+                    
+                    file_size = os.path.getsize(temp_filename)
+                    if file_size == 0:
+                        raise RuntimeError("临时音频文件为空")
+                    
                     # 读取临时文件
                     with open(temp_filename, "rb") as f:
                         audio_bytes = f.read()
@@ -357,10 +379,11 @@ class OpenAudioNode:
                     references = [ServeReferenceAudio(audio=audio_bytes, text=reference_text)]
                 finally:
                     # 确保临时文件被删除
-                    try:
-                        os.unlink(temp_filename)
-                    except Exception as e:
-                        logger.warning(f"无法删除临时文件 {temp_filename}: {str(e)}")
+                    if temp_filename and os.path.exists(temp_filename):
+                        try:
+                            os.unlink(temp_filename)
+                        except Exception as e:
+                            logger.warning(f"无法删除临时文件 {temp_filename}: {str(e)}")
             
             # 创建TTS请求
             request = ServeTTSRequest(
